@@ -4,9 +4,10 @@ metadata:
   name: pulsedeploy
   namespace: pulsedeploy
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: pulsedeploy
   ports:
     - port: 80
-      targetPort: http
+      targetPort: 8081
+      nodePort: 30081
