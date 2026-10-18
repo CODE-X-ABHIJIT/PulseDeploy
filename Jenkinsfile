@@ -29,7 +29,7 @@ pipeline {
                     set -eu
                     python3 -m venv .venv
                     .venv/bin/pip install -r requirements.txt pytest
-                    .venv/bin/pytest -q
+                    .venv/bin/python -m pytest -q
                 '''
             }
         }
