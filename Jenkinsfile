@@ -37,7 +37,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    env.IMAGE = "${env.IMAGE_NAME}:${env.GIT_COMMIT.take(12)}"
+                    env.IMAGE = "${env.IMAGE_NAME}:${sh(script: 'git rev-parse --short=12 HEAD', returnStdout: true).trim()}"
                 }
                 sh 'docker build --pull -t "$IMAGE" .'
             }
