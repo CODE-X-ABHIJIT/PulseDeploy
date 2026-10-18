@@ -14,6 +14,6 @@ COPY --chown=appuser:appuser app.py .
 
 USER 10001
 
-EXPOSE 8080
+EXPOSE 8081
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "2", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8081", "--workers", "2", "app:app"]
