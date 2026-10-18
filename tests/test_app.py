@@ -1,11 +1,19 @@
+
 from app import app
 
-def test_home():
-    response = app.test_client().get("/")
+
+def test_homepage():
+    client = app.test_client()
+    response = client.get("/")
+
     assert response.status_code == 200
-    assert response.json["app"] == "PulseDeploy"
+    assert b"PulseDeploy" in response.data
+    assert b"Application Overview" in response.data
+
 
 def test_health():
-    response = app.test_client().get("/health")
+    client = app.test_client()
+    response = client.get("/health")
+
     assert response.status_code == 200
-    assert response.json["status"] == "healthy"
+    assert response.get_json() == {"status": "healthy"}
