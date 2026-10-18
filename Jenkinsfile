@@ -95,6 +95,7 @@ pipeline {
             }
         }
 
+        
         stage('Verify') {
             steps {
                 withCredentials([
@@ -108,28 +109,21 @@ pipeline {
                         export KUBECONFIG="$KUBECONFIG_FILE"
 
                         kubectl --context kind-pulsedeploy-lab \
-                          get deployment,pods,service -n pulsedeploy
+                        get deployment,pods,service -n pulsedeploy
 
                         kubectl --context kind-pulsedeploy-lab \
-                          rollout status deployment/pulsedeploy \
-                          -n pulsedeploy --timeout=60s
+                        rollout status deployment/pulsedeploy \
+                        -n pulsedeploy --timeout=60s
 
-                        kubectl --context kind-pulsedeploy-lab \
-                          port-forward -n pulsedeploy \
-                          service/pulsedeploy 18080:80 \
-                          >/tmp/pulsedeploy-pf.log 2>&1 &
-                        PF_PID=$!
-                        trap 'kill "$PF_PID" 2>/dev/null || true' EXIT
+                        echo "Checking PulseDeploy health on port 8081..."
 
-                        for i in $(seq 1 20); do
-                            if curl -fsS http://127.0.0.1:18080/health; then
-                                exit 0
-                            fi
-                            sleep 2
-                        done
+                        curl --retry 10 \
+                            --retry-delay 2 \
+                            --retry-connrefused \
+                            --fail \
+                            http://127.0.0.1:8081/health
 
-                        echo "Health check failed"
-                        exit 1
+                        echo "PulseDeploy health check successful."
                     '''
                 }
             }
